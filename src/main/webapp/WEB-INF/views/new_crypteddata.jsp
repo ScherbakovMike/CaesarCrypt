@@ -11,15 +11,15 @@
 <body>
 <div align="center">
     <h2>Crypt new data</h2>
-    <form:form action="crypt" method="post" modelAttribute="cryptedData">
+    <form:form action="save" method="post" modelAttribute="cryptedData" enctype="multipart/form-data">
         <table border="0" cellpadding="5">
             <tr>
-                <td>Text to crypt: </td>
-                <td><form:textarea cols="40" rows="5" path="source_text" /></td>
+                <td><label>Select a file to crypt</label></td>
+                <td><input type="file" name="file" /></td>
             </tr>
             <tr>
                 <td>Key: </td>
-                <td><form:input path="key" value="15"/></td>
+                <td><form:input path="crypt_key"/></td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Crypt"></td>

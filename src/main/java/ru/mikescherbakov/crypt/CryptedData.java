@@ -1,27 +1,26 @@
 package ru.mikescherbakov.crypt;
 
 import javax.persistence.*;
-import java.sql.Date;
 
 @Entity
 public class CryptedData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date datetime;
+    private Long transaction_time;
     private String source_text;
     private String crypted_text;
-    private int key;
+    private int crypt_key;
 
     protected CryptedData() {
 
     }
 
-    protected CryptedData(Date datetime, String source_text, String crypted_text, int key) {
-        this.datetime = datetime;
+    protected CryptedData(Long transaction_time, String source_text, String crypted_text, int crypt_key) {
+        this.transaction_time = transaction_time;
         this.source_text = source_text;
         this.crypted_text = crypted_text;
-        this.key = key;
+        this.crypt_key = crypt_key;
     }
 
     public Long getId() {
@@ -32,12 +31,12 @@ public class CryptedData {
         this.id = id;
     }
 
-    public Date getDatetime() {
-        return datetime;
+    public Long getTransaction_time() {
+        return transaction_time;
     }
 
-    public void setDate_time(Date datetime) {
-        this.datetime = datetime;
+    public void setTransaction_time(long transaction_time) {
+        this.transaction_time = transaction_time;
     }
 
     public String getSource_text() {
@@ -56,11 +55,11 @@ public class CryptedData {
         this.crypted_text = crypted_text;
     }
 
-    public int getKey() {
-        return key;
+    public int getCrypt_key() {
+        return crypt_key;
     }
 
-    public void setKey(int key) {
-        this.key = key;
+    public void setCrypt_key(int crypt_key) {
+        this.crypt_key = crypt_key;
     }
 }

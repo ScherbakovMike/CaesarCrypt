@@ -3,7 +3,6 @@ package ru.mikescherbakov.crypt;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
-import java.sql.Date;
 import java.util.Objects;
 
 @Component
@@ -36,7 +35,7 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
         String result = "";
         String source_text = cryptedData.getSource_text();
         source_text = StringEscapeUtils.unescapeHtml3(source_text);
-        int key = cryptedData.getKey();
+        int key = cryptedData.getCrypt_key();
 
         if (Objects.nonNull(source_text)
                 && key != 0) {
@@ -47,8 +46,9 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
                 int newPosition = (currentPosition + key) % alphabet.length();
                 result += alphabet.substring(newPosition, newPosition + 1);
             }
+            //cryptedData.setKey(0);
             cryptedData.setCrypted_text(result);
-            cryptedData.setDate_time(new Date(System.currentTimeMillis()));
+            cryptedData.setTransaction_time(System.currentTimeMillis());
         }
     }
 }

@@ -2,9 +2,12 @@ package ru.mikescherbakov.crypt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -34,9 +37,15 @@ public class CryptedDataController {
     }
 
     // сохранить и зашифровать
-    @RequestMapping(value = "/crypt", method = RequestMethod.POST)
-    public String saveCustomer(@ModelAttribute("cryptedData") CryptedData cryptedData) {
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String saveCryptedData(@ModelAttribute("cryptedData") CryptedData cryptedData, @RequestParam("file") MultipartFile file, ModelMap modelMap) {
         cryptedService.cryptAndSave(cryptedData);
+        return "redirect:/";
+    }
+
+    @RequestMapping("/delete")
+    public String deleteCryptedDataForm(@RequestParam long id) {
+        cryptedService.delete(id);
         return "redirect:/";
     }
 }
