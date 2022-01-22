@@ -11,6 +11,7 @@ public class CryptedData {
     private String source_text;
     private String crypted_text;
     private int crypt_key;
+    private CryptResult crypt_result;
 
     protected CryptedData() {
 
@@ -61,5 +62,17 @@ public class CryptedData {
 
     public void setCrypt_key(int crypt_key) {
         this.crypt_key = crypt_key;
+    }
+
+    public void setTransaction_time(Long transaction_time) {
+        this.transaction_time = transaction_time;
+    }
+
+    public CryptResult getCrypt_result() {
+        return crypt_result;
+    }
+
+    public void setCrypt_result(CryptResult crypt_result) {
+        this.crypt_result = crypt_result;
     }
 }

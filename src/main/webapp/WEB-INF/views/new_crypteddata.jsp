@@ -19,7 +19,7 @@
             </tr>
             <tr>
                 <td>Key: </td>
-                <td><form:input path="crypt_key"/></td>
+                <td><form:input path="crypt_key" value="15"/></td>
             </tr>
             <tr>
                 <td colspan="2"><input type="submit" value="Crypt"></td>
