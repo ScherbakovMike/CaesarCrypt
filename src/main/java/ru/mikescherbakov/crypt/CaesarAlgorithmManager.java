@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
         //String source_text = cryptedData.getSource_text().toUpperCase();
         String source_text = "";
         try {
-            source_text = new String(file.getBytes(), Charset.forName("UTF-8"));
+            source_text = new String(file.getBytes(), StandardCharsets.UTF_8);
             source_text = source_text.toUpperCase();
             cryptedData.setSource_text(source_text);
         } catch (IOException e) {
@@ -108,12 +109,15 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
         if (text.length() == 0)
             return true;
 
-        LinkedHashMap<Character, Integer> statMap = characterCount(text);
-        Object[] entries = statMap.entrySet().toArray();
-        return ((Map.Entry<Character, Integer>) entries[0]).getKey().equals(' ');
+        LinkedHashMap<Character, Integer> statMap = characterCountMap(text);
+        Long globalCount = statMap.values().stream().collect(Collectors.summarizingInt(Integer::intValue)).getSum();
+        double aFrequency = Double.valueOf(statMap.get('А'))/globalCount;
+        double bFrequency = Double.valueOf(statMap.get('О'))/globalCount;
+        double cFrequency = Double.valueOf(statMap.get('И'))/globalCount;
+        return aFrequency>0.04 && bFrequency>0.04&&cFrequency>0.04;
     }
 
-    private LinkedHashMap<Character, Integer> characterCount(String inputString) {
+    private LinkedHashMap<Character, Integer> characterCountMap(String inputString) {
         LinkedHashMap<Character, Integer> charCountMap
                 = new LinkedHashMap<>();
 
@@ -131,6 +135,10 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         Map.Entry::getValue,
                         (e1, e2) -> e1, LinkedHashMap::new));
+
+    }
+
+    public static void main(String[] args) {
 
     }
 }
