@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+         pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01
 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -47,7 +47,7 @@ Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
                 <td><a href="./delete?id=${cd.id}">Delete</a><br>
                     <a href="./saveresult?id=${cd.id}">Save result</a><br>
                     <a href="./decrypt_bruteforce?id=${cd.id}">Decrypt by bruteforce</a><br>
-                    <a href="./decrypt_statanalysis?id=${cd.id}">Decrypt by stat analysis</a><br>
+                    <a href="./loadDictionary?id=${cd.id}">Decrypt by stat analysis</a><br>
                 </td>
             </tr>
         </c:forEach>

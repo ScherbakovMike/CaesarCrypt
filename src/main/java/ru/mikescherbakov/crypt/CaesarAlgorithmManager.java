@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,7 +28,6 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
     public void crypt(CryptedData cryptedData, MultipartFile file) {
         StringBuilder result = new StringBuilder();
 
-        //String source_text = cryptedData.getSource_text().toUpperCase();
         String source_text = "";
         try {
             source_text = new String(file.getBytes(), StandardCharsets.UTF_8);
@@ -39,7 +38,6 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
             logger.error("file.getBytes() error", e);
         }
 
-        //source_text = StringEscapeUtils.unescapeHtml3(source_text);
         int key = cryptedData.getCrypt_key();
 
         if (key != 0) {
@@ -69,7 +67,7 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
     public String decrypt(CryptedData cryptedData, DecryptMethod method) {
         if (method == DecryptMethod.BRUTEFORCE) {
             String alphabet = getAlphabet();
-            int key = 0;
+            int key = 15;
             StringBuilder decryptedText = new StringBuilder();
             String cryptedText = cryptedData.getCrypted_text();
             boolean success = false;
@@ -79,7 +77,10 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
                     String to;
                     if (alphabet.contains(from)) {
                         int currentPosition = alphabet.indexOf(from);
-                        int newPosition = (currentPosition + key) % alphabet.length();
+                        int newPosition = currentPosition - key;
+
+                        if (newPosition < 0)
+                            newPosition = alphabet.length() + newPosition;
                         to = alphabet.substring(newPosition, newPosition + 1);
                     } else {
                         to = from;
@@ -87,34 +88,62 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
 
                     decryptedText.append(to);
                 }
-                if(textCriteria(decryptedText.toString())){
+                if (textCriteria(decryptedText.toString())) {
                     success = true;
                     break;
                 }
 
                 key++;
-            } while(key<alphabet.length());
+            } while (key < alphabet.length());
 
-            if(!success)
+            if (!success)
                 return "Can't decrypt by bruteforce method";
             else
                 return decryptedText.toString();
 
         } else {
-            return "Unsupported decrypt method";
+            String dictionary = cryptedData.getSource_text();
+            String cryptedText = cryptedData.getCrypted_text();
+            String alphabet = getAlphabet();
+
+            LinkedHashMap<Character, Double> characterPercentMapDictionary = characterPercentMap(dictionary);
+            LinkedHashMap<Character, Double> characterPercentMapCryptedText = characterPercentMap(cryptedText);
+
+            Iterator<Map.Entry<Character, Double>> iterator = characterPercentMapDictionary.entrySet().iterator();
+
+            char[] decryptedArray = cryptedText.toCharArray();
+            for (Map.Entry<Character, Double> entryCrypted : characterPercentMapCryptedText.entrySet()) {
+                Character from = entryCrypted.getKey();
+                if(alphabet.contains(String.valueOf(from))) {
+                    if(!iterator.hasNext())
+                        break;
+
+                    Map.Entry<Character, Double> entryDictionary = iterator.next();
+                    Character to = entryDictionary.getKey();
+                    int pos = cryptedText.indexOf(from.toString());
+                    while (pos != -1) {
+                        decryptedArray[pos] = to;
+                        pos = cryptedText.indexOf(from.toString(), pos + 1);
+                    }
+                }
+            }
+
+            return new String(decryptedArray);
         }
     }
 
     private boolean textCriteria(String text) {
         if (text.length() == 0)
             return true;
-
         LinkedHashMap<Character, Integer> statMap = characterCountMap(text);
+        if (statMap.get('А') == null || statMap.get('О') == null || statMap.get('И') == null)
+            return false;
+
         Long globalCount = statMap.values().stream().collect(Collectors.summarizingInt(Integer::intValue)).getSum();
-        double aFrequency = Double.valueOf(statMap.get('А'))/globalCount;
-        double bFrequency = Double.valueOf(statMap.get('О'))/globalCount;
-        double cFrequency = Double.valueOf(statMap.get('И'))/globalCount;
-        return aFrequency>0.04 && bFrequency>0.04&&cFrequency>0.04;
+        double aFrequency = Double.valueOf(statMap.get('А')) / globalCount;
+        double bFrequency = Double.valueOf(statMap.get('О')) / globalCount;
+        double cFrequency = Double.valueOf(statMap.get('И')) / globalCount;
+        return aFrequency > 0.04 && bFrequency > 0.04 && cFrequency > 0.04;
     }
 
     private LinkedHashMap<Character, Integer> characterCountMap(String inputString) {
@@ -138,7 +167,13 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
 
     }
 
-    public static void main(String[] args) {
-
+    private LinkedHashMap<Character, Double> characterPercentMap(String inputString) {
+        LinkedHashMap<Character, Integer> charCountMap = characterCountMap(inputString);
+        long charCount = charCountMap.values().stream().collect(Collectors.summarizingInt(Integer::intValue)).getSum();
+        return charCountMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        n -> 100.0 * n.getValue().doubleValue() / charCount,
+                        (e1, e2) -> e1, LinkedHashMap::new));
     }
+
 }

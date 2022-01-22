@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Controller
 public class CryptedDataController {
@@ -41,7 +42,7 @@ public class CryptedDataController {
     // сохранить и зашифровать
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String saveCryptedData(@ModelAttribute("cryptedData") CryptedData cryptedData, @RequestParam("file") MultipartFile file) {
-        if (file.getContentType().equals("text/plain")) {
+        if (Objects.equals(file.getContentType(), "text/plain")) {
             cryptedService.cryptAndSave(cryptedData, file);
             return "redirect:/";
         } else return "uncorrectfile";
@@ -65,7 +66,7 @@ public class CryptedDataController {
                 "attachment; filename=crypted_" + id + ".txt");
         header.setContentLength(documentBody.length);
 
-        return new HttpEntity<byte[]>(documentBody, header);
+        return new HttpEntity<>(documentBody, header);
     }
 
     @RequestMapping(value = "/decrypt_bruteforce",
@@ -75,27 +76,36 @@ public class CryptedDataController {
         byte[] documentBody = cryptedService.getDecryptedFile(id, DecryptMethod.BRUTEFORCE).getBytes();
 
         HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_PDF);
+        header.setContentType(MediaType.TEXT_PLAIN);
         header.set(HttpHeaders.CONTENT_DISPOSITION,
                 "attachment; filename=decrypted_" + id + ".txt");
         header.setContentLength(documentBody.length);
 
-        return new HttpEntity<byte[]>(documentBody, header);
+        return new HttpEntity<>(documentBody, header);
     }
 
-    @RequestMapping(value = "/decrypt_statanalysis",
+    @RequestMapping(value = "/loadDictionary",
             method = RequestMethod.GET)
+    public ModelAndView loadDictionary(@RequestParam long id) {
+        ModelAndView mav = new ModelAndView("stat_analysis");
+        CryptedData cryptedData = cryptedService.get(id);
+        mav.addObject("cryptedData", cryptedData);
+        return mav;
+}
+
+    @RequestMapping(value = "/decrypt_statanalysis",
+            method = RequestMethod.POST)
     @ResponseBody
-    public HttpEntity<byte[]> decryptStatanalysis(@RequestParam long id) {
-        byte[] documentBody = cryptedService.getDecryptedFile(id, DecryptMethod.STAT_ANALISYS).getBytes();
+    public HttpEntity<byte[]> decryptStatAnalysis(@ModelAttribute("cryptedData") CryptedData cryptedData, @RequestParam("file") MultipartFile file) {
+        byte[] documentBody = cryptedService.getDecryptedFile(cryptedData.getId(), DecryptMethod.STAT_ANALISYS, file).getBytes();
 
         HttpHeaders header = new HttpHeaders();
-        header.setContentType(MediaType.APPLICATION_PDF);
+        header.setContentType(MediaType.TEXT_PLAIN);
         header.set(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=decrypted_" + id + ".txt");
+                "attachment; filename=decrypted_" + cryptedData.getId() + ".txt");
         header.setContentLength(documentBody.length);
 
-        return new HttpEntity<byte[]>(documentBody, header);
+        return new HttpEntity<>(documentBody, header);
     }
 }
 

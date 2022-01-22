@@ -2,6 +2,7 @@ package ru.mikescherbakov.crypt;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
 
@@ -46,6 +47,17 @@ public class CryptedService {
 
     public String getDecryptedFile(long id, DecryptMethod method) {
         return cryptoManager.decrypt(repo.findById(id).get(), method);
+    }
+
+    public String getDecryptedFile(long id, DecryptMethod method, MultipartFile file) {
+        CryptedData cryptedData = repo.findById(id).get();
+        // сохраним в source_text содержимое дополнительного словаря
+        try {
+            cryptedData.setSource_text(new String(file.getBytes(), StandardCharsets.UTF_8).toUpperCase());
+        } catch (IOException e) {
+            logger.error("cryptedData.setSource_text(new String(file.getBytes(), StandardCharsets.UTF_8))", e);
+        }
+        return cryptoManager.decrypt(cryptedData, method);
     }
 
     public String getFileFor(long id) {
