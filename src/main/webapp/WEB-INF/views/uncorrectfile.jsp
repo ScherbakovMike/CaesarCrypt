@@ -6,7 +6,8 @@
     <title>Uncorrect file</title>
 </head>
 <body>
-    <p>Algorithm supports only content-type:plain/text!</p><br>
-    <a href="javascript:history.back()">Go back</a>
+<div align="center">
+    Algorithm supports only content-type:plain/text!<br>
+    <a href="javascript:history.back()">Go back</a></div>
 </body>
 </html>
