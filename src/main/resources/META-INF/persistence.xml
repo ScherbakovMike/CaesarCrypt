@@ -5,7 +5,7 @@
           http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
              version="2.1">
 
-    <persistence-unit name="CaesarDB">
+    <persistence-unit name="CaesarDBTest">
         <properties>
             <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/caesar_crypt" />
             <property name="javax.persistence.jdbc.user" value="root" />
@@ -16,4 +16,14 @@
         </properties>
     </persistence-unit>
 
+    <persistence-unit name="CaesarDBProd">
+        <properties>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/caesar_crypt" />
+            <property name="javax.persistence.jdbc.user" value="Java" />
+            <property name="javax.persistence.jdbc.password" value="Java2022$" />
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+            <property name="hibernate.show_sql" value="true" />
+            <property name="hibernate.format_sql" value="true" />
+        </properties>
+    </persistence-unit>
 </persistence>

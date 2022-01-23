@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,11 +15,8 @@ public class CaesarAlgorithmManager implements AlgorithmManager {
     Logger logger = LoggerFactory.getLogger(CaesarAlgorithmManager.class);
 
     private String getAlphabet() {
-        String alphabet = "";
-        alphabet += "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-        alphabet += "1234567890";
-        alphabet += "~`@\"№#;$%:^?&*()-_+=|\\//' ";
-
+        String alphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
+        alphabet += ".,\":-!? ";
         return alphabet;
     }
 
