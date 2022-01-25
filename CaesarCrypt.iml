@@ -21,13 +21,15 @@
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
           <factory-entry name="CaesarDB" value="dde1a710-5c20-4630-a983-df170e844ea9" />
+          <factory-entry name="CaesarDBProd" />
+          <factory-entry name="CaesarDBTest" value="dde1a710-5c20-4630-a983-df170e844ea9" />
           <factory-entry name="caesar_crypt" value="dde1a710-5c20-4630-a983-df170e844ea9" />
           <factory-entry name="entityManagerFactory" />
         </datasource-mapping>
         <naming-strategy-map>
           <unit-entry name="caesar_crypt" />
         </naming-strategy-map>
-        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
+        <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/webapp/WEB-INF/classes/META-INF/persistence.xml" />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">

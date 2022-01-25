@@ -1,17 +1,13 @@
 package ru.mikescherbakov.crypt;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,7 +19,7 @@ public class CryptedDataController {
     private CryptedService cryptedService;
 
     // главная страница
-    @RequestMapping("/")
+    @RequestMapping("/html")
     public ModelAndView home() {
         List<CryptedData> listCryptedData = cryptedService.listAll();
         ModelAndView mav = new ModelAndView("index");
@@ -91,7 +87,7 @@ public class CryptedDataController {
         CryptedData cryptedData = cryptedService.get(id);
         mav.addObject("cryptedData", cryptedData);
         return mav;
-}
+    }
 
     @RequestMapping(value = "/decrypt_statanalysis",
             method = RequestMethod.POST)
