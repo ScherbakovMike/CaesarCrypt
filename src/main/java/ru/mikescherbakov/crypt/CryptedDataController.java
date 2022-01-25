@@ -14,9 +14,12 @@ import java.util.Objects;
 
 @Controller
 public class CryptedDataController {
+    private final CryptedService cryptedService;
 
     @Autowired
-    private CryptedService cryptedService;
+    public CryptedDataController(CryptedService cryptedService) {
+        this.cryptedService = cryptedService;
+    }
 
     // главная страница
     @RequestMapping("/html")

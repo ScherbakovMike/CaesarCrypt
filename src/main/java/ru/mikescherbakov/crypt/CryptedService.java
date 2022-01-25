@@ -16,10 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class CryptedService {
     Logger logger = LoggerFactory.getLogger(CryptedService.class);
 
-    @Autowired
     CryptedDataRepository repo;
-    @Autowired
     CaesarAlgorithmManager cryptoManager;
+
+    @Autowired
+    public CryptedService(CryptedDataRepository repo, CaesarAlgorithmManager cryptoManager) {
+        this.repo = repo;
+        this.cryptoManager = cryptoManager;
+    }
 
     public void save(CryptedData cryptedData) {
         repo.save(cryptedData);
